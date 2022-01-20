@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.utils.text import slugify
 
 
@@ -22,13 +22,13 @@ class Video(models.Model):
         return self.title
 
 
-def pre_save_cource(sender, instance, created, *args, **kwargs):
-    if created:
+def pre_save_cource(sender, instance, *args, **kwargs):
+    if not instance.slug:
         instance.slug = slugify(instance.name)
 
 
-def pre_save_video(sender, instance, created, *args, **kwargs):
-    if created:
+def pre_save_video(sender, instance, *args, **kwargs):
+    if not instance.slug:
         instance.slug = slugify(instance.title)
 
 pre_save.connect(pre_save_cource, sender=Course)
